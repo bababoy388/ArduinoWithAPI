@@ -1,4 +1,3 @@
-from unidecode import unidecode
 import feedparser
 from fastapi import FastAPI
 import httpx
@@ -7,6 +6,12 @@ from typing import Dict, List, Optional
 import asyncio
 from contextlib import asynccontextmanager
 import serial
+
+try:
+    from unidecode import unidecode
+except Exception:
+    def unidecode(s: str) -> str:
+        return s.encode("ascii", errors="ignore").decode()
 
 def lcd_formatting(text: str, width: int = 16) -> str:
     if not text:
