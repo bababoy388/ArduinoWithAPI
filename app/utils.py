@@ -1,3 +1,5 @@
+import time
+
 import feedparser
 from fastapi import FastAPI
 import httpx
@@ -103,6 +105,14 @@ async def lifespan(app: FastAPI):
     app.state.serial = None
     try:
         app.state.serial = serial.Serial(config.SERIAL_PORT, config.BAUDRATE, timeout=1)
+        try:
+            app.state.serial.setDTR(False)
+            app.state.serial.setRTS(False)
+        except Exception:
+            pass
+
+        time.sleep(6.0)
+
         print(f"[Serial] Opened {config.SERIAL_PORT} @ {config.BAUDRATE}")
     except Exception as e:
         print(f"[Serial] Failed to open {config.SERIAL_PORT}: {e}")
